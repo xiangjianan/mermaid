@@ -194,7 +194,7 @@ button {
   display: grid;
   place-items: center;
   min-height: 0;
-  padding: 32px;
+  padding: 24px;
   overflow: auto;
   background:
     linear-gradient(#edf2f7 1px, transparent 1px),
@@ -206,9 +206,9 @@ button {
 .diagram-surface {
   display: grid;
   place-items: center;
-  width: min(100%, 1100px);
-  min-height: min(100%, 420px);
-  padding: 34px;
+  width: min(100%, 1040px);
+  min-height: min(100%, 360px);
+  padding: 26px;
   border: 1px solid #d8e1ec;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.94);
@@ -219,7 +219,7 @@ button {
   display: block;
   width: 100%;
   max-width: 960px;
-  max-height: min(62vh, 620px);
+  max-height: min(68vh, 620px);
   height: auto;
   overflow: visible;
 }

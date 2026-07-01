@@ -1,7 +1,7 @@
 export const defaultMarkdown = `# Product Flow
 
 \`\`\`mermaid
-flowchart LR
+flowchart TD
   A[Paste Markdown] --> B{Find Mermaid}
   B -- Found --> C[Parse Flowchart]
   B -- Missing --> D[Show Empty State]
