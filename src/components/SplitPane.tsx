@@ -1,8 +1,16 @@
-import { type PointerEvent as ReactPointerEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 const MIN_LEFT_PERCENT = 28;
 const MAX_LEFT_PERCENT = 68;
 const DEFAULT_LEFT_PERCENT = 42;
+const KEYBOARD_STEP_PERCENT = 2;
 
 type SplitPaneProps = {
   left: ReactNode;
@@ -33,6 +41,12 @@ export function SplitPane({ left, right, storageKey }: SplitPaneProps) {
   const storageKeyRef = useRef(storageKey);
   const [leftPercent, setLeftPercent] = useState(() => getInitialLeftPercent(storageKey));
 
+  const persistLeftPercent = (nextPercent: number) => {
+    const clampedPercent = clampLeftPercent(nextPercent);
+    setLeftPercent(clampedPercent);
+    window.localStorage.setItem(storageKeyRef.current, String(clampedPercent));
+  };
+
   useEffect(() => {
     storageKeyRef.current = storageKey;
   }, [storageKey]);
@@ -51,8 +65,7 @@ export function SplitPane({ left, right, storageKey }: SplitPaneProps) {
       }
 
       const nextPercent = clampLeftPercent(((clientX - bounds.left) / bounds.width) * 100);
-      setLeftPercent(nextPercent);
-      window.localStorage.setItem(storageKeyRef.current, String(nextPercent));
+      persistLeftPercent(nextPercent);
     };
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -96,8 +109,19 @@ export function SplitPane({ left, right, storageKey }: SplitPaneProps) {
     }
 
     const nextPercent = clampLeftPercent(((event.clientX - bounds.left) / bounds.width) * 100);
-    setLeftPercent(nextPercent);
-    window.localStorage.setItem(storageKeyRef.current, String(nextPercent));
+    persistLeftPercent(nextPercent);
+  };
+
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      persistLeftPercent(leftPercent - KEYBOARD_STEP_PERCENT);
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      persistLeftPercent(leftPercent + KEYBOARD_STEP_PERCENT);
+    }
   };
 
   return (
@@ -112,8 +136,12 @@ export function SplitPane({ left, right, storageKey }: SplitPaneProps) {
         role="separator"
         aria-label="Resize panes"
         aria-orientation="vertical"
+        aria-valuemin={MIN_LEFT_PERCENT}
+        aria-valuemax={MAX_LEFT_PERCENT}
+        aria-valuenow={leftPercent}
         className="split-pane__divider"
         onPointerDown={handlePointerDown}
+        onKeyDown={handleKeyDown}
       >
         <span />
       </button>

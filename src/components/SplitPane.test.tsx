@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SplitPane } from "./SplitPane";
@@ -73,5 +73,31 @@ describe("SplitPane", () => {
     );
 
     expect(localStorage.getItem("test-split")).toBe("55");
+  });
+
+  it("supports keyboard resizing with ARIA values", () => {
+    render(
+      <SplitPane
+        left={<div>Markdown editor</div>}
+        right={<div>Diagram preview</div>}
+        storageKey="test-split"
+      />
+    );
+
+    const divider = screen.getByRole("separator", { name: "Resize panes" });
+
+    expect(divider).toHaveAttribute("aria-valuemin", "28");
+    expect(divider).toHaveAttribute("aria-valuemax", "68");
+    expect(divider).toHaveAttribute("aria-valuenow", "42");
+
+    fireEvent.keyDown(divider, { key: "ArrowRight" });
+
+    expect(divider).toHaveAttribute("aria-valuenow", "44");
+    expect(localStorage.getItem("test-split")).toBe("44");
+
+    fireEvent.keyDown(divider, { key: "ArrowLeft" });
+
+    expect(divider).toHaveAttribute("aria-valuenow", "42");
+    expect(localStorage.getItem("test-split")).toBe("42");
   });
 });

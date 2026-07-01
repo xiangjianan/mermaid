@@ -128,4 +128,41 @@ describe("extractFirstMermaidBlock", () => {
       code: "flowchart TD\n  C --> D"
     });
   });
+
+  it("does not extract mermaid fences nested inside another fenced block", () => {
+    const markdown = [
+      "````md",
+      "Example:",
+      "```mermaid",
+      "flowchart LR",
+      "  A --> B",
+      "```",
+      "````",
+      "",
+      "```mermaid",
+      "flowchart TD",
+      "  C --> D",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart TD\n  C --> D"
+    });
+  });
+
+  it("treats the rest of the document as non-mermaid code after an unclosed non-mermaid fence", () => {
+    const markdown = [
+      "```md",
+      "Example:",
+      "```mermaid",
+      "flowchart LR",
+      "  A --> B"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: false,
+      code: ""
+    });
+  });
 });

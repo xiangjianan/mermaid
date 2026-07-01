@@ -24,11 +24,30 @@ export function extractFirstMermaidBlock(markdown: string): MermaidBlockResult {
   for (let index = 0; index < lines.length; index += 1) {
     const openingMatch = openingFencePattern.exec(lines[index]);
 
-    if (!openingMatch || !isMermaidInfo(openingMatch[2])) {
+    if (!openingMatch) {
       continue;
     }
 
     const marker = openingMatch[1];
+
+    if (!isMermaidInfo(openingMatch[2])) {
+      let foundClosingFence = false;
+
+      for (let codeIndex = index + 1; codeIndex < lines.length; codeIndex += 1) {
+        if (isClosingFence(lines[codeIndex], marker)) {
+          index = codeIndex;
+          foundClosingFence = true;
+          break;
+        }
+      }
+
+      if (!foundClosingFence) {
+        return { found: false, code: "" };
+      }
+
+      continue;
+    }
+
     const codeLines: string[] = [];
 
     for (let codeIndex = index + 1; codeIndex < lines.length; codeIndex += 1) {
