@@ -67,4 +67,65 @@ describe("extractFirstMermaidBlock", () => {
       code: "flowchart TD\n  A --> B"
     });
   });
+
+  it("extracts mermaid fences with trailing info", () => {
+    const markdown = [
+      '```mermaid title="Flow"',
+      "flowchart LR",
+      "  A --> B",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart LR\n  A --> B"
+    });
+  });
+
+  it("extracts tilde mermaid fences", () => {
+    const markdown = [
+      "~~~mermaid",
+      "flowchart LR",
+      "  A --> B",
+      "~~~"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart LR\n  A --> B"
+    });
+  });
+
+  it("extracts mermaid blocks with longer fences", () => {
+    const markdown = [
+      "````mermaid",
+      "flowchart LR",
+      "  A[Contains ``` text] --> B",
+      "````"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart LR\n  A[Contains ``` text] --> B"
+    });
+  });
+
+  it("does not match four-space-indented mermaid fences", () => {
+    const markdown = [
+      "    ```mermaid",
+      "    flowchart LR",
+      "      A --> B",
+      "    ```",
+      "",
+      "```mermaid",
+      "flowchart TD",
+      "  C --> D",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart TD\n  C --> D"
+    });
+  });
 });
