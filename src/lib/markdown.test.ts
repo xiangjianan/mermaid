@@ -1,0 +1,70 @@
+import { describe, expect, it } from "vitest";
+
+import { extractFirstMermaidBlock } from "./markdown";
+
+describe("extractFirstMermaidBlock", () => {
+  it("extracts the first mermaid fenced block from Markdown", () => {
+    const markdown = [
+      "# Product Flow",
+      "",
+      "```mermaid",
+      "flowchart LR",
+      "  A[Paste Markdown] --> B{Find Mermaid}",
+      "```",
+      ""
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart LR\n  A[Paste Markdown] --> B{Find Mermaid}"
+    });
+  });
+
+  it("matches Mermaid language case-insensitively", () => {
+    const markdown = [
+      "```Mermaid",
+      "sequenceDiagram",
+      "  Alice->>Bob: Hello",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "sequenceDiagram\n  Alice->>Bob: Hello"
+    });
+  });
+
+  it("returns an empty result when no mermaid fence exists", () => {
+    const markdown = [
+      "# Notes",
+      "",
+      "```ts",
+      "const value = 1;",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: false,
+      code: ""
+    });
+  });
+
+  it("extracts only the first mermaid block", () => {
+    const markdown = [
+      "```mermaid",
+      "flowchart TD",
+      "  A --> B",
+      "```",
+      "",
+      "```mermaid",
+      "flowchart LR",
+      "  C --> D",
+      "```"
+    ].join("\n");
+
+    expect(extractFirstMermaidBlock(markdown)).toEqual({
+      found: true,
+      code: "flowchart TD\n  A --> B"
+    });
+  });
+});
