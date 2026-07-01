@@ -17,9 +17,10 @@ export function initializeMermaid(): void {
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: "strict",
+    suppressErrorRendering: true,
+    htmlLabels: false,
     flowchart: {
-      curve: "basis",
-      htmlLabels: false,
+      curve: "rounded",
       nodeSpacing: 56,
       rankSpacing: 72,
       padding: 18
@@ -32,7 +33,7 @@ export function initializeMermaid(): void {
       primaryTextColor: "#24364b",
       lineColor: "#607086",
       arrowheadColor: "#607086",
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       fontSize: "15px",
       edgeLabelBackground: "#f6f8fb",
       clusterBkg: "#ffffff",
