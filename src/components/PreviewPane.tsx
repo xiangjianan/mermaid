@@ -13,23 +13,45 @@ type PreviewPaneProps = {
 export function PreviewPane({ state }: PreviewPaneProps) {
   const paneRef = useRef<HTMLElement>(null);
   const [isFallbackFullscreen, setIsFallbackFullscreen] = useState(false);
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
 
   useEffect(() => {
-    const clearFallbackFullscreen = () => {
+    const syncNativeFullscreen = () => {
+      const paneIsFullscreen = document.fullscreenElement === paneRef.current;
+      setIsNativeFullscreen(paneIsFullscreen);
+
       if (document.fullscreenElement) {
         setIsFallbackFullscreen(false);
       }
     };
 
-    document.addEventListener("fullscreenchange", clearFallbackFullscreen);
+    document.addEventListener("fullscreenchange", syncNativeFullscreen);
 
     return () => {
-      document.removeEventListener("fullscreenchange", clearFallbackFullscreen);
+      document.removeEventListener("fullscreenchange", syncNativeFullscreen);
     };
   }, []);
 
+  useEffect(() => {
+    if (!isFallbackFullscreen) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFallbackFullscreen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFallbackFullscreen]);
+
   const handleFullscreenClick = async () => {
-    if (document.fullscreenElement) {
+    if (isNativeFullscreen) {
       await document.exitFullscreen();
       return;
     }
@@ -39,16 +61,21 @@ export function PreviewPane({ state }: PreviewPaneProps) {
       return;
     }
 
+    const requestFullscreen = paneRef.current?.requestFullscreen;
+
+    if (!requestFullscreen) {
+      setIsFallbackFullscreen(true);
+      return;
+    }
+
     try {
-      await paneRef.current?.requestFullscreen();
+      await requestFullscreen.call(paneRef.current);
     } catch {
       setIsFallbackFullscreen(true);
     }
-
-    if (!paneRef.current?.requestFullscreen) {
-      setIsFallbackFullscreen(true);
-    }
   };
+
+  const isFullscreen = isNativeFullscreen || isFallbackFullscreen;
 
   return (
     <section
@@ -63,12 +90,12 @@ export function PreviewPane({ state }: PreviewPaneProps) {
         <button
           type="button"
           className="fullscreen-button"
-          aria-pressed={isFallbackFullscreen || Boolean(document.fullscreenElement)}
+          aria-pressed={isFullscreen}
           onClick={() => {
             void handleFullscreenClick();
           }}
         >
-          Fullscreen
+          {isFullscreen ? "Exit fullscreen" : "Fullscreen"}
         </button>
       </header>
       <div className="preview-canvas" data-testid="preview-canvas">
