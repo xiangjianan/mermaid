@@ -1,10 +1,59 @@
+import { useEffect, useMemo, useState } from "react";
+
+import { EditorPane } from "./components/EditorPane";
+import { PreviewPane, type PreviewState } from "./components/PreviewPane";
+import { SplitPane } from "./components/SplitPane";
+import { defaultMarkdown } from "./lib/defaultMarkdown";
+import { useDebouncedValue } from "./lib/debounce";
+import { extractFirstMermaidBlock } from "./lib/markdown";
+import { renderMermaidDiagram } from "./lib/mermaidRenderer";
+
 export default function App() {
+  const [markdown, setMarkdown] = useState(defaultMarkdown);
+  const [previewState, setPreviewState] = useState<PreviewState>({ type: "loading" });
+  const debouncedMarkdown = useDebouncedValue(markdown, 250);
+  const mermaidBlock = useMemo(
+    () => extractFirstMermaidBlock(debouncedMarkdown),
+    [debouncedMarkdown]
+  );
+
+  useEffect(() => {
+    let isStale = false;
+
+    if (!mermaidBlock.found || mermaidBlock.code.trim().length === 0) {
+      setPreviewState({ type: "empty" });
+      return () => {
+        isStale = true;
+      };
+    }
+
+    setPreviewState({ type: "loading" });
+
+    void renderMermaidDiagram(mermaidBlock.code).then((result) => {
+      if (isStale) {
+        return;
+      }
+
+      if (result.status === "success") {
+        setPreviewState({ type: "success", svg: result.svg });
+        return;
+      }
+
+      setPreviewState({ type: "error", message: result.message });
+    });
+
+    return () => {
+      isStale = true;
+    };
+  }, [mermaidBlock]);
+
   return (
     <main className="app-shell">
-      <section className="placeholder-panel" aria-labelledby="app-title">
-        <h1 id="app-title">Mermaid Visualizer</h1>
-        <p>Project scaffold is ready.</p>
-      </section>
+      <SplitPane
+        storageKey="mermaid-visualizer-left-width"
+        left={<EditorPane value={markdown} onChange={setMarkdown} />}
+        right={<PreviewPane state={previewState} />}
+      />
     </main>
   );
 }
