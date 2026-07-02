@@ -1,10 +1,16 @@
 import mermaid from "mermaid";
 
 import { enhanceMermaidSvg } from "./svgEnhancer";
+import type { RenderMode, VisualStyle } from "./viewOptions";
 
 export type MermaidRenderResult =
   | { status: "success"; svg: string }
   | { status: "error"; message: string };
+
+export type MermaidRenderOptions = {
+  mode: RenderMode;
+  style: VisualStyle;
+};
 
 let initialized = false;
 let renderCounter = 0;
@@ -44,7 +50,10 @@ export function initializeMermaid(): void {
   initialized = true;
 }
 
-export async function renderMermaidDiagram(source: string): Promise<MermaidRenderResult> {
+export async function renderMermaidDiagram(
+  source: string,
+  options: MermaidRenderOptions = { mode: "beautified", style: "product-saas" }
+): Promise<MermaidRenderResult> {
   try {
     initializeMermaid();
 
@@ -54,7 +63,7 @@ export async function renderMermaidDiagram(source: string): Promise<MermaidRende
 
     return {
       status: "success",
-      svg: enhanceMermaidSvg(svg)
+      svg: enhanceMermaidSvg(svg, options)
     };
   } catch (error) {
     return {
