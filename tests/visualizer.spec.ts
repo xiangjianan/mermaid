@@ -13,10 +13,10 @@ test("renders the default mermaid diagram", async ({ page }) => {
   );
 });
 
-test("shows empty state when no mermaid block exists", async ({ page }) => {
+test("shows empty state when source is blank", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("textbox", { name: "Markdown input" }).fill("# Plain Markdown");
+  await page.getByRole("textbox", { name: "Markdown input" }).fill("   ");
 
   await expect(page.getByText("Add a fenced")).toBeVisible();
 });

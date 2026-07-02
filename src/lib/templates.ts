@@ -1,5 +1,7 @@
+export type MermaidTemplateId = "flowchart" | "sequence" | "class" | "state";
+
 export type MermaidTemplate = {
-  id: string;
+  id: MermaidTemplateId;
   label: string;
   code: string;
 };

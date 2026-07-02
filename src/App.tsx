@@ -5,15 +5,15 @@ import { PreviewPane, type PreviewState } from "./components/PreviewPane";
 import { SplitPane } from "./components/SplitPane";
 import { defaultMarkdown } from "./lib/defaultMarkdown";
 import { useDebouncedValue } from "./lib/debounce";
-import { extractFirstMermaidBlock } from "./lib/markdown";
 import { renderMermaidDiagram } from "./lib/mermaidRenderer";
+import { normalizeMermaidSource } from "./lib/source";
 
 export default function App() {
   const [markdown, setMarkdown] = useState(defaultMarkdown);
   const [previewState, setPreviewState] = useState<PreviewState>({ type: "loading" });
   const debouncedMarkdown = useDebouncedValue(markdown, 250);
   const mermaidBlock = useMemo(
-    () => extractFirstMermaidBlock(debouncedMarkdown),
+    () => normalizeMermaidSource(debouncedMarkdown),
     [debouncedMarkdown]
   );
 
