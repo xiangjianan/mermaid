@@ -19,5 +19,9 @@ export const DEFAULT_ZOOM = 100;
 export const ZOOM_STEP = 10;
 
 export function clampZoom(value: number) {
+  if (!Number.isFinite(value)) {
+    return DEFAULT_ZOOM;
+  }
+
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round(value)));
 }

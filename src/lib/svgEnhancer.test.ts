@@ -56,6 +56,22 @@ describe("enhanceMermaidSvg", () => {
     expect(enhanced).not.toContain("visualizer-svg");
   });
 
+  it("does not add beautified path attributes in standard mode", () => {
+    const enhanced = enhanceMermaidSvg(
+      '<svg><path class="flowchart-link" d="M0 0L1 1" /></svg>',
+      {
+        mode: "standard",
+        style: "classic"
+      }
+    );
+
+    const path = new DOMParser().parseFromString(enhanced, "image/svg+xml").querySelector("path");
+
+    expect(path?.hasAttribute("stroke-linecap")).toBe(false);
+    expect(path?.hasAttribute("stroke-linejoin")).toBe(false);
+    expect(path?.hasAttribute("stroke-width")).toBe(false);
+  });
+
   it("adds beautified style classes in beautified mode", () => {
     const enhanced = enhanceMermaidSvg(
       '<svg><path class="flowchart-link" d="M0 0L1 1" /></svg>',

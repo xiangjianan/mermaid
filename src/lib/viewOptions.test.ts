@@ -18,4 +18,10 @@ describe("viewOptions", () => {
     expect(clampZoom(110)).toBe(110);
     expect(clampZoom(240)).toBe(200);
   });
+
+  it("falls back to default zoom for non-finite values", () => {
+    expect(clampZoom(Number.NaN)).toBe(100);
+    expect(clampZoom(Infinity)).toBe(100);
+    expect(clampZoom(-Infinity)).toBe(100);
+  });
 });
