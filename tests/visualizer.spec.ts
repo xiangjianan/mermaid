@@ -1,10 +1,15 @@
 import { expect, test } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 
 test("renders raw Mermaid code in beautified mode", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("textbox", { name: "Mermaid code input" })).toBeVisible();
+  const editor = page.getByRole("textbox", { name: "Mermaid code input" });
+  await expect(editor).toBeVisible();
   await expect(page.getByRole("heading", { name: "Visual Preview" })).toBeVisible();
+
+  await editor.fill("flowchart LR\n  RawA[Raw source] --> RawB[Rendered]");
+
   await expect(page.locator(".diagram-surface svg.visualizer-svg")).toBeVisible({
     timeout: 10_000,
   });
@@ -50,4 +55,16 @@ test("zooms preview and exports PNG", async ({ page }) => {
   const download = await downloadPromise;
 
   expect(download.suggestedFilename()).toBe("mermaid-diagram.png");
+
+  const downloadPath = await download.path();
+  expect(downloadPath).not.toBeNull();
+  if (downloadPath === null) {
+    throw new Error("Expected downloaded PNG to be available on disk");
+  }
+
+  const png = await readFile(downloadPath);
+  expect(png.length).toBeGreaterThan(8);
+  expect(Array.from(png.subarray(0, 8))).toEqual([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+  ]);
 });
