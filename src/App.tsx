@@ -32,6 +32,12 @@ export default function App() {
     [debouncedSource]
   );
 
+  const handleSourceChange = (nextSource: string) => {
+    exportMessageTokenRef.current += 1;
+    setExportMessage("");
+    setSource(nextSource);
+  };
+
   useEffect(() => {
     let isStale = false;
 
@@ -97,7 +103,7 @@ export default function App() {
     <main className="app-shell">
       <SplitPane
         storageKey="mermaid-visualizer-left-width"
-        left={<EditorPane value={source} onChange={setSource} />}
+        left={<EditorPane value={source} onChange={handleSourceChange} />}
         right={
           <PreviewPane
             state={previewState}
