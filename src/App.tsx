@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { EditorPane } from "./components/EditorPane";
 import { PreviewPane, type PreviewState } from "./components/PreviewPane";
@@ -23,6 +23,9 @@ export default function App() {
   const [visualStyle, setVisualStyle] = useState<VisualStyle>("product-saas");
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [exportMessage, setExportMessage] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const isExportingRef = useRef(false);
+  const exportMessageTokenRef = useRef(0);
   const debouncedSource = useDebouncedValue(source, 250);
   const mermaidSource = useMemo(
     () => normalizeMermaidSource(debouncedSource),
@@ -32,6 +35,7 @@ export default function App() {
   useEffect(() => {
     let isStale = false;
 
+    exportMessageTokenRef.current += 1;
     setExportMessage("");
 
     if (!mermaidSource.found || mermaidSource.code.trim().length === 0) {
@@ -65,15 +69,27 @@ export default function App() {
   }, [mermaidSource, renderMode, visualStyle]);
 
   const handleExportPng = async () => {
-    if (previewState.type !== "success") {
+    if (previewState.type !== "success" || isExportingRef.current) {
       return;
     }
 
+    const exportToken = exportMessageTokenRef.current + 1;
+    exportMessageTokenRef.current = exportToken;
+    isExportingRef.current = true;
+    setIsExporting(true);
+
     try {
       await exportSvgToPng(previewState.svg);
-      setExportMessage("PNG exported.");
+      if (exportMessageTokenRef.current === exportToken) {
+        setExportMessage("PNG exported.");
+      }
     } catch (error) {
-      setExportMessage(error instanceof Error ? error.message : String(error));
+      if (exportMessageTokenRef.current === exportToken) {
+        setExportMessage(error instanceof Error ? error.message : String(error));
+      }
+    } finally {
+      isExportingRef.current = false;
+      setIsExporting(false);
     }
   };
 
@@ -88,6 +104,7 @@ export default function App() {
             renderMode={renderMode}
             visualStyle={visualStyle}
             zoom={zoom}
+            isExporting={isExporting}
             exportMessage={exportMessage}
             onRenderModeChange={setRenderMode}
             onVisualStyleChange={setVisualStyle}

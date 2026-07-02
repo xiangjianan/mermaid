@@ -18,6 +18,7 @@ type PreviewPaneProps = {
   renderMode: RenderMode;
   visualStyle: VisualStyle;
   zoom: number;
+  isExporting: boolean;
   exportMessage: string;
   onRenderModeChange: (mode: RenderMode) => void;
   onVisualStyleChange: (style: VisualStyle) => void;
@@ -32,6 +33,7 @@ export function PreviewPane({
   renderMode,
   visualStyle,
   zoom,
+  isExporting,
   exportMessage,
   onRenderModeChange,
   onVisualStyleChange,
@@ -162,7 +164,7 @@ export function PreviewPane({
             <button
               type="button"
               className="toolbar-button"
-              disabled={state.type !== "success"}
+              disabled={state.type !== "success" || isExporting}
               onClick={onExportPng}
             >
               Export PNG

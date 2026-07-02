@@ -9,6 +9,7 @@ const defaultPreviewPaneProps = {
   renderMode: "beautified" as const,
   visualStyle: "product-saas" as const,
   zoom: 100,
+  isExporting: false,
   exportMessage: "",
   onRenderModeChange: vi.fn(),
   onVisualStyleChange: vi.fn(),
@@ -31,6 +32,43 @@ describe("PreviewPane", () => {
       <PreviewPane
         {...defaultPreviewPaneProps}
         state={{ type: "empty" }}
+        onExportPng={onExportPng}
+      />
+    );
+
+    const exportButton = screen.getByRole("button", { name: "Export PNG" });
+
+    expect(exportButton).toBeDisabled();
+
+    fireEvent.click(exportButton);
+
+    expect(onExportPng).not.toHaveBeenCalled();
+  });
+
+  it("calls PNG export when preview is successful and not exporting", () => {
+    const onExportPng = vi.fn();
+
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        onExportPng={onExportPng}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Export PNG" }));
+
+    expect(onExportPng).toHaveBeenCalledTimes(1);
+  });
+
+  it("disables PNG export while exporting", () => {
+    const onExportPng = vi.fn();
+
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        isExporting={true}
         onExportPng={onExportPng}
       />
     );
@@ -73,6 +111,50 @@ describe("PreviewPane", () => {
     expect(onZoomOut).toHaveBeenCalledTimes(1);
     expect(onZoomReset).toHaveBeenCalledTimes(1);
     expect(onZoomIn).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls visual style handler from the style select", () => {
+    const onVisualStyleChange = vi.fn();
+
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        onVisualStyleChange={onVisualStyleChange}
+      />
+    );
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Style" }), {
+      target: { value: "classic" }
+    });
+
+    expect(onVisualStyleChange).toHaveBeenCalledWith("classic");
+  });
+
+  it("renders export messages near the toolbar", () => {
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        exportMessage="PNG exported."
+      />
+    );
+
+    expect(screen.getByText("PNG exported.")).toBeInTheDocument();
+  });
+
+  it("applies zoom transform to successful diagrams", () => {
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        zoom={150}
+      />
+    );
+
+    expect(screen.getByLabelText("Rendered Mermaid diagram")).toHaveStyle({
+      transform: "scale(1.5)"
+    });
   });
 
   it("uses fallback fullscreen when native fullscreen is unavailable and exits on Escape", async () => {
