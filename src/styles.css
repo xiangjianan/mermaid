@@ -117,6 +117,10 @@ button {
   background: #ffffff;
 }
 
+.editor-pane .pane-header {
+  align-items: center;
+}
+
 .pane-header h1 {
   margin: 0;
   color: #172336;

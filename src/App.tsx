@@ -8,6 +8,7 @@ import { useDebouncedValue } from "./lib/debounce";
 import { renderMermaidDiagram } from "./lib/mermaidRenderer";
 import { exportSvgToPng } from "./lib/pngExport";
 import { normalizeMermaidSource } from "./lib/source";
+import type { MermaidTemplate } from "./lib/templates";
 import {
   clampZoom,
   DEFAULT_ZOOM,
@@ -36,6 +37,11 @@ export default function App() {
     exportMessageTokenRef.current += 1;
     setExportMessage("");
     setSource(nextSource);
+  };
+
+  const handleTemplateSelect = (template: MermaidTemplate) => {
+    handleSourceChange(template.code);
+    setZoom(DEFAULT_ZOOM);
   };
 
   useEffect(() => {
@@ -103,7 +109,13 @@ export default function App() {
     <main className="app-shell">
       <SplitPane
         storageKey="mermaid-visualizer-left-width"
-        left={<EditorPane value={source} onChange={handleSourceChange} />}
+        left={
+          <EditorPane
+            value={source}
+            onChange={handleSourceChange}
+            onTemplateSelect={handleTemplateSelect}
+          />
+        }
         right={
           <PreviewPane
             state={previewState}
