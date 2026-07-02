@@ -52,6 +52,22 @@ describe("App", () => {
     expect(screen.queryByText("PNG exported.")).not.toBeInTheDocument();
   });
 
+  it("disables export immediately after source edits until the new preview renders", async () => {
+    render(<App />);
+
+    const exportButton = await screen.findByRole("button", { name: "Export PNG" });
+
+    await waitFor(() => {
+      expect(exportButton).toBeEnabled();
+    });
+
+    fireEvent.change(screen.getByLabelText("Mermaid code input"), {
+      target: { value: "flowchart LR\n  Fresh --> Diagram" }
+    });
+
+    expect(exportButton).toBeDisabled();
+  });
+
   it("does not show a stale export message when a template is selected before export completes", async () => {
     let resolveExport: () => void = () => {};
     vi.mocked(exportSvgToPng).mockReturnValue(
@@ -92,11 +108,14 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
     expect(screen.getByRole("button", { name: "Reset zoom" })).toHaveTextContent("110%");
 
+    const sequenceTemplate = mermaidTemplates.find((template) => template.id === "sequence");
+
     fireEvent.change(screen.getByRole("combobox", { name: "Mermaid template" }), {
       target: { value: "sequence" }
     });
 
-    expect(screen.getByLabelText("Mermaid code input")).toHaveValue(mermaidTemplates[1].code);
+    expect(sequenceTemplate).toBeDefined();
+    expect(screen.getByLabelText("Mermaid code input")).toHaveValue(sequenceTemplate?.code);
     expect(screen.getByRole("button", { name: "Reset zoom" })).toHaveTextContent("100%");
   });
 });

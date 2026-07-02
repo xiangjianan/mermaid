@@ -9,6 +9,20 @@ export type SvgDimensions = {
   height: number;
 };
 
+const INLINE_STYLE_PROPERTIES = [
+  "fill",
+  "stroke",
+  "stroke-width",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-dasharray",
+  "opacity",
+  "font-family",
+  "font-size",
+  "font-weight",
+  "color"
+];
+
 function parsePixelDimension(value: string | null) {
   if (!value) {
     return null;
@@ -52,6 +66,34 @@ export function getSvgExportDimensions(svgMarkup: string): SvgDimensions | null 
   return null;
 }
 
+function inlineSvgComputedStyles(sourceSvg: SVGSVGElement): string {
+  const clone = sourceSvg.cloneNode(true) as SVGSVGElement;
+  const sourceElements = [sourceSvg, ...Array.from(sourceSvg.querySelectorAll("*"))];
+  const cloneElements = [clone, ...Array.from(clone.querySelectorAll("*"))];
+
+  sourceElements.forEach((sourceElement, index) => {
+    const cloneElement = cloneElements[index] as SVGElement | undefined;
+    if (!cloneElement) {
+      return;
+    }
+
+    const styles = window.getComputedStyle(sourceElement);
+    INLINE_STYLE_PROPERTIES.forEach((property) => {
+      const value = styles.getPropertyValue(property);
+      if (value) {
+        cloneElement.style.setProperty(property, value);
+      }
+    });
+
+    const filter = styles.getPropertyValue("filter");
+    if (filter && filter !== "none") {
+      cloneElement.style.setProperty("filter", filter);
+    }
+  });
+
+  return new XMLSerializer().serializeToString(clone);
+}
+
 export async function exportSvgToPng(svgMarkup: string, options: PngExportOptions = {}) {
   const scale = options.scale ?? 2;
 
@@ -67,7 +109,10 @@ export async function exportSvgToPng(svgMarkup: string, options: PngExportOption
 
   const background = options.background ?? "#ffffff";
   const filename = options.filename ?? "mermaid-diagram.png";
-  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+  const renderedSvg = document.querySelector(".diagram-surface svg");
+  const exportMarkup =
+    renderedSvg instanceof SVGSVGElement ? inlineSvgComputedStyles(renderedSvg) : svgMarkup;
+  const svgBlob = new Blob([exportMarkup], { type: "image/svg+xml;charset=utf-8" });
   const svgUrl = URL.createObjectURL(svgBlob);
 
   try {

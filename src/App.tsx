@@ -25,16 +25,26 @@ export default function App() {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [exportMessage, setExportMessage] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [renderedSourceKey, setRenderedSourceKey] = useState("");
   const isExportingRef = useRef(false);
   const exportMessageTokenRef = useRef(0);
   const debouncedSource = useDebouncedValue(source, 250);
+  const normalizedCurrentSource = useMemo(() => normalizeMermaidSource(source), [source]);
   const mermaidSource = useMemo(
     () => normalizeMermaidSource(debouncedSource),
     [debouncedSource]
   );
+  const currentSourceKey = normalizedCurrentSource.found ? normalizedCurrentSource.code.trim() : "";
+  const debouncedSourceKey = mermaidSource.found ? mermaidSource.code.trim() : "";
+  const canExport =
+    previewState.type === "success" &&
+    currentSourceKey.length > 0 &&
+    currentSourceKey === debouncedSourceKey &&
+    currentSourceKey === renderedSourceKey;
 
   const handleSourceChange = (nextSource: string) => {
     exportMessageTokenRef.current += 1;
+    setRenderedSourceKey("");
     setExportMessage("");
     setSource(nextSource);
   };
@@ -51,6 +61,7 @@ export default function App() {
     setExportMessage("");
 
     if (!mermaidSource.found || mermaidSource.code.trim().length === 0) {
+      setRenderedSourceKey("");
       setPreviewState({ type: "empty" });
       return () => {
         isStale = true;
@@ -68,10 +79,12 @@ export default function App() {
       }
 
       if (result.status === "success") {
+        setRenderedSourceKey(mermaidSource.code.trim());
         setPreviewState({ type: "success", svg: result.svg });
         return;
       }
 
+      setRenderedSourceKey("");
       setPreviewState({ type: "error", message: result.message });
     });
 
@@ -81,7 +94,7 @@ export default function App() {
   }, [mermaidSource, renderMode, visualStyle]);
 
   const handleExportPng = async () => {
-    if (previewState.type !== "success" || isExportingRef.current) {
+    if (!canExport || previewState.type !== "success" || isExportingRef.current) {
       return;
     }
 
@@ -123,6 +136,7 @@ export default function App() {
             visualStyle={visualStyle}
             zoom={zoom}
             isExporting={isExporting}
+            canExport={canExport}
             exportMessage={exportMessage}
             onRenderModeChange={setRenderMode}
             onVisualStyleChange={setVisualStyle}

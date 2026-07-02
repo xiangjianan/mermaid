@@ -406,20 +406,20 @@ button {
   overflow: visible;
 }
 
-.diagram-surface .node rect,
-.diagram-surface .node circle,
-.diagram-surface .node ellipse,
-.diagram-surface .node polygon,
-.diagram-surface .node path {
+.diagram-surface .visualizer-mode-beautified .node rect,
+.diagram-surface .visualizer-mode-beautified .node circle,
+.diagram-surface .visualizer-mode-beautified .node ellipse,
+.diagram-surface .visualizer-mode-beautified .node polygon,
+.diagram-surface .visualizer-mode-beautified .node path {
   stroke: #d8e1ec;
   stroke-width: 1.3px;
   filter: drop-shadow(0 7px 13px rgba(33, 48, 70, 0.11));
 }
 
-.diagram-surface .node .label,
-.diagram-surface .nodeLabel,
-.diagram-surface .label,
-.diagram-surface text {
+.diagram-surface .visualizer-mode-beautified .node .label,
+.diagram-surface .visualizer-mode-beautified .nodeLabel,
+.diagram-surface .visualizer-mode-beautified .label,
+.diagram-surface .visualizer-mode-beautified text {
   color: #24364b;
   fill: #24364b;
   font-family:
@@ -429,95 +429,95 @@ button {
   letter-spacing: 0;
 }
 
-.diagram-surface .edgePath .path,
-.diagram-surface .flowchart-link,
-.diagram-surface path.flowchart-link,
-.diagram-surface .edge-thickness-normal {
+.diagram-surface .visualizer-mode-beautified .edgePath .path,
+.diagram-surface .visualizer-mode-beautified .flowchart-link,
+.diagram-surface .visualizer-mode-beautified path.flowchart-link,
+.diagram-surface .visualizer-mode-beautified .edge-thickness-normal {
   stroke: #607086;
   stroke-width: 2.2px;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.diagram-surface marker path,
-.diagram-surface marker polygon,
-.diagram-surface marker circle {
+.diagram-surface .visualizer-mode-beautified marker path,
+.diagram-surface .visualizer-mode-beautified marker polygon,
+.diagram-surface .visualizer-mode-beautified marker circle {
   fill: #607086;
   stroke: #607086;
 }
 
-.diagram-surface .edgeLabel,
-.diagram-surface .edgeLabel p {
+.diagram-surface .visualizer-mode-beautified .edgeLabel,
+.diagram-surface .visualizer-mode-beautified .edgeLabel p {
   color: #53657b;
   background: #f6f8fb;
 }
 
-.visual-style-classic .diagram-surface .node rect,
-.visual-style-classic .diagram-surface .node circle,
-.visual-style-classic .diagram-surface .node ellipse,
-.visual-style-classic .diagram-surface .node polygon,
-.visual-style-classic .diagram-surface .node path {
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .node rect,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .node circle,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .node ellipse,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .node polygon,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .node path {
   stroke: #c4ceda;
   filter: none;
 }
 
-.visual-style-classic .diagram-surface .edgePath .path,
-.visual-style-classic .diagram-surface .flowchart-link,
-.visual-style-classic .diagram-surface path.flowchart-link,
-.visual-style-classic .diagram-surface .edge-thickness-normal {
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .edgePath .path,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .flowchart-link,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified path.flowchart-link,
+.visual-style-classic .diagram-surface .visualizer-mode-beautified .edge-thickness-normal {
   stroke: #4b5563;
 }
 
-.visual-style-soft-color .diagram-surface .node rect,
-.visual-style-soft-color .diagram-surface .node circle,
-.visual-style-soft-color .diagram-surface .node ellipse,
-.visual-style-soft-color .diagram-surface .node polygon,
-.visual-style-soft-color .diagram-surface .node path,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .node rect,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .node circle,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .node ellipse,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .node polygon,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .node path,
 .visualizer-style-soft-color .node rect,
 .visualizer-style-soft-color .node polygon {
   stroke: #9dc0ea;
 }
 
-.visual-style-soft-color .diagram-surface .edgePath .path,
-.visual-style-soft-color .diagram-surface .flowchart-link,
-.visual-style-soft-color .diagram-surface path.flowchart-link,
-.visual-style-soft-color .diagram-surface .edge-thickness-normal {
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .edgePath .path,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .flowchart-link,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified path.flowchart-link,
+.visual-style-soft-color .diagram-surface .visualizer-mode-beautified .edge-thickness-normal {
   stroke: #517eb6;
 }
 
-.visual-style-dark .diagram-surface .node rect,
-.visual-style-dark .diagram-surface .node circle,
-.visual-style-dark .diagram-surface .node ellipse,
-.visual-style-dark .diagram-surface .node polygon,
-.visual-style-dark .diagram-surface .node path {
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node rect,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node circle,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node ellipse,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node polygon,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node path {
   stroke: #475569;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
 }
 
-.visual-style-dark .diagram-surface .node .label,
-.visual-style-dark .diagram-surface .nodeLabel,
-.visual-style-dark .diagram-surface .label,
-.visual-style-dark .diagram-surface text {
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .node .label,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .nodeLabel,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .label,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified text {
   color: #e5edf7;
   fill: #e5edf7;
 }
 
-.visual-style-dark .diagram-surface .edgePath .path,
-.visual-style-dark .diagram-surface .flowchart-link,
-.visual-style-dark .diagram-surface path.flowchart-link,
-.visual-style-dark .diagram-surface .edge-thickness-normal {
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .edgePath .path,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .flowchart-link,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified path.flowchart-link,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .edge-thickness-normal {
   stroke: #9fb1c7;
 }
 
-.visual-style-dark .diagram-surface marker path,
-.visual-style-dark .diagram-surface marker polygon,
-.visual-style-dark .diagram-surface marker circle {
+.visual-style-dark .diagram-surface .visualizer-mode-beautified marker path,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified marker polygon,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified marker circle {
   fill: #9fb1c7;
   stroke: #9fb1c7;
 }
 
-.visual-style-dark .diagram-surface .edgeLabel,
-.visual-style-dark .diagram-surface .edgeLabel p {
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .edgeLabel,
+.visual-style-dark .diagram-surface .visualizer-mode-beautified .edgeLabel p {
   color: #cbd5e1;
   background: #172033;
 }

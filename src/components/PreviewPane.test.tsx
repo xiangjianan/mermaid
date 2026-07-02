@@ -10,6 +10,7 @@ const defaultPreviewPaneProps = {
   visualStyle: "product-saas" as const,
   zoom: 100,
   isExporting: false,
+  canExport: true,
   exportMessage: "",
   onRenderModeChange: vi.fn(),
   onVisualStyleChange: vi.fn(),
@@ -32,6 +33,7 @@ describe("PreviewPane", () => {
       <PreviewPane
         {...defaultPreviewPaneProps}
         state={{ type: "empty" }}
+        canExport={false}
         onExportPng={onExportPng}
       />
     );
@@ -81,6 +83,28 @@ describe("PreviewPane", () => {
 
     expect(onExportPng).not.toHaveBeenCalled();
   });
+
+  it("disables PNG export when the rendered diagram is stale", () => {
+    const onExportPng = vi.fn();
+
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        canExport={false}
+        onExportPng={onExportPng}
+      />
+    );
+
+    const exportButton = screen.getByRole("button", { name: "Export PNG" });
+
+    expect(exportButton).toBeDisabled();
+
+    fireEvent.click(exportButton);
+
+    expect(onExportPng).not.toHaveBeenCalled();
+  });
+
 
   it("calls render mode and zoom handlers", () => {
     const onRenderModeChange = vi.fn();
