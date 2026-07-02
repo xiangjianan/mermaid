@@ -9,12 +9,19 @@ export type SvgDimensions = {
   height: number;
 };
 
-function parseNumericDimension(value: string | null) {
+function parsePixelDimension(value: string | null) {
   if (!value) {
     return null;
   }
 
-  const parsed = Number.parseFloat(value);
+  const trimmedValue = value.trim();
+  const match = trimmedValue.match(/^(\d+(?:\.\d+)?|\.\d+)(?:px)?$/i);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number.parseFloat(match[1]);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
@@ -26,8 +33,8 @@ export function getSvgExportDimensions(svgMarkup: string): SvgDimensions | null 
     return null;
   }
 
-  const width = parseNumericDimension(svg.getAttribute("width"));
-  const height = parseNumericDimension(svg.getAttribute("height"));
+  const width = parsePixelDimension(svg.getAttribute("width"));
+  const height = parsePixelDimension(svg.getAttribute("height"));
 
   if (width && height) {
     return { width, height };
@@ -46,13 +53,18 @@ export function getSvgExportDimensions(svgMarkup: string): SvgDimensions | null 
 }
 
 export async function exportSvgToPng(svgMarkup: string, options: PngExportOptions = {}) {
+  const scale = options.scale ?? 2;
+
+  if (!Number.isFinite(scale) || scale <= 0) {
+    throw new Error("PNG export scale must be a finite number greater than 0.");
+  }
+
   const dimensions = getSvgExportDimensions(svgMarkup);
 
   if (!dimensions) {
     throw new Error("The rendered SVG has no usable dimensions for PNG export.");
   }
 
-  const scale = options.scale ?? 2;
   const background = options.background ?? "#ffffff";
   const filename = options.filename ?? "mermaid-diagram.png";
   const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
@@ -96,7 +108,7 @@ export async function exportSvgToPng(svgMarkup: string, options: PngExportOption
     anchor.href = pngUrl;
     anchor.download = filename;
     anchor.click();
-    URL.revokeObjectURL(pngUrl);
+    window.setTimeout(() => URL.revokeObjectURL(pngUrl), 0);
   } finally {
     URL.revokeObjectURL(svgUrl);
   }
