@@ -30,6 +30,7 @@ body {
 }
 
 button,
+select,
 textarea {
   font: inherit;
 }
@@ -159,6 +160,129 @@ button {
   background: #ffffff;
 }
 
+.preview-header-actions {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: min(100%, 440px);
+}
+
+.preview-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.segmented-control,
+.zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  overflow: hidden;
+  border: 1px solid #c8d3df;
+  border-radius: 7px;
+  background: #f8fafc;
+}
+
+.segmented-control button,
+.zoom-controls button {
+  min-width: 36px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-right: 1px solid #d8e1ec;
+  background: transparent;
+  color: #53657b;
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.segmented-control button:last-child,
+.zoom-controls button:last-child {
+  border-right: 0;
+}
+
+.segmented-control button:hover,
+.segmented-control button:focus-visible,
+.zoom-controls button:hover,
+.zoom-controls button:focus-visible {
+  background: #eef3f8;
+  color: #172336;
+}
+
+.segmented-control button:focus-visible,
+.zoom-controls button:focus-visible,
+.toolbar-button:focus-visible,
+.toolbar-select-label select:focus-visible {
+  outline: 2px solid #486b9f;
+  outline-offset: 2px;
+}
+
+.segmented-control button.is-active {
+  background: #25354a;
+  color: #ffffff;
+}
+
+.toolbar-select-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  color: #607086;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.toolbar-select-label select {
+  min-height: 36px;
+  padding: 0 30px 0 10px;
+  border: 1px solid #c8d3df;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #25354a;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.toolbar-button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid #c8d3df;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #25354a;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.toolbar-button:hover:not(:disabled),
+.toolbar-button:focus-visible:not(:disabled) {
+  border-color: #607086;
+  background: #eef3f8;
+  color: #172336;
+}
+
+.toolbar-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
 .fullscreen-button {
   flex: 0 0 auto;
   min-height: 36px;
@@ -189,6 +313,17 @@ button {
   outline-offset: 2px;
 }
 
+.export-message {
+  flex-basis: 100%;
+  max-width: none;
+  margin: 0;
+  color: #3d6d54;
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: right;
+}
+
 .preview-canvas {
   flex: 1;
   display: grid;
@@ -213,6 +348,7 @@ button {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 18px 48px rgba(42, 56, 78, 0.12);
+  transform-origin: center center;
 }
 
 .diagram-surface svg {
@@ -348,6 +484,11 @@ button {
     padding: 18px;
   }
 
+  .preview-header-actions,
+  .preview-toolbar {
+    justify-content: flex-start;
+  }
+
   .pane-header h1 {
     font-size: 1rem;
   }
@@ -384,6 +525,28 @@ button {
 
   .fullscreen-button {
     width: 100%;
+  }
+
+  .preview-header-actions,
+  .preview-toolbar,
+  .toolbar-select-label,
+  .toolbar-select-label select,
+  .toolbar-button {
+    width: 100%;
+  }
+
+  .segmented-control,
+  .zoom-controls {
+    width: 100%;
+  }
+
+  .segmented-control button,
+  .zoom-controls button {
+    flex: 1 1 0;
+  }
+
+  .export-message {
+    text-align: left;
   }
 
   .state-panel {

@@ -6,21 +6,35 @@ import { SplitPane } from "./components/SplitPane";
 import { defaultMarkdown } from "./lib/defaultMarkdown";
 import { useDebouncedValue } from "./lib/debounce";
 import { renderMermaidDiagram } from "./lib/mermaidRenderer";
+import { exportSvgToPng } from "./lib/pngExport";
 import { normalizeMermaidSource } from "./lib/source";
+import {
+  clampZoom,
+  DEFAULT_ZOOM,
+  ZOOM_STEP,
+  type RenderMode,
+  type VisualStyle
+} from "./lib/viewOptions";
 
 export default function App() {
-  const [markdown, setMarkdown] = useState(defaultMarkdown);
+  const [source, setSource] = useState(defaultMarkdown);
   const [previewState, setPreviewState] = useState<PreviewState>({ type: "loading" });
-  const debouncedMarkdown = useDebouncedValue(markdown, 250);
-  const mermaidBlock = useMemo(
-    () => normalizeMermaidSource(debouncedMarkdown),
-    [debouncedMarkdown]
+  const [renderMode, setRenderMode] = useState<RenderMode>("beautified");
+  const [visualStyle, setVisualStyle] = useState<VisualStyle>("product-saas");
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [exportMessage, setExportMessage] = useState("");
+  const debouncedSource = useDebouncedValue(source, 250);
+  const mermaidSource = useMemo(
+    () => normalizeMermaidSource(debouncedSource),
+    [debouncedSource]
   );
 
   useEffect(() => {
     let isStale = false;
 
-    if (!mermaidBlock.found || mermaidBlock.code.trim().length === 0) {
+    setExportMessage("");
+
+    if (!mermaidSource.found || mermaidSource.code.trim().length === 0) {
       setPreviewState({ type: "empty" });
       return () => {
         isStale = true;
@@ -29,7 +43,10 @@ export default function App() {
 
     setPreviewState({ type: "loading" });
 
-    void renderMermaidDiagram(mermaidBlock.code).then((result) => {
+    void renderMermaidDiagram(mermaidSource.code, {
+      mode: renderMode,
+      style: visualStyle
+    }).then((result) => {
       if (isStale) {
         return;
       }
@@ -45,14 +62,49 @@ export default function App() {
     return () => {
       isStale = true;
     };
-  }, [mermaidBlock]);
+  }, [mermaidSource, renderMode, visualStyle]);
+
+  const handleExportPng = async () => {
+    if (previewState.type !== "success") {
+      return;
+    }
+
+    try {
+      await exportSvgToPng(previewState.svg);
+      setExportMessage("PNG exported.");
+    } catch (error) {
+      setExportMessage(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   return (
     <main className="app-shell">
       <SplitPane
         storageKey="mermaid-visualizer-left-width"
-        left={<EditorPane value={markdown} onChange={setMarkdown} />}
-        right={<PreviewPane state={previewState} />}
+        left={<EditorPane value={source} onChange={setSource} />}
+        right={
+          <PreviewPane
+            state={previewState}
+            renderMode={renderMode}
+            visualStyle={visualStyle}
+            zoom={zoom}
+            exportMessage={exportMessage}
+            onRenderModeChange={setRenderMode}
+            onVisualStyleChange={setVisualStyle}
+            onZoomOut={() => {
+              setZoom((currentZoom) => clampZoom(currentZoom - ZOOM_STEP));
+            }}
+            onZoomIn={() => {
+              setZoom((currentZoom) => clampZoom(currentZoom + ZOOM_STEP));
+            }}
+            onZoomReset={() => {
+              setZoom(DEFAULT_ZOOM);
+            }}
+            onExportPng={() => {
+              void handleExportPng();
+            }}
+          />
+        }
       />
     </main>
   );

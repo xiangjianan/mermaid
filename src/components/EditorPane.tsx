@@ -8,12 +8,12 @@ export function EditorPane({ value, onChange }: EditorPaneProps) {
     <section className="tool-pane editor-pane">
       <header className="pane-header">
         <div>
-          <h1>Markdown Input</h1>
-          <p>Paste Markdown containing a fenced mermaid code block to render a polished diagram.</p>
+          <h1>Mermaid Code</h1>
+          <p>Paste Mermaid code directly, or keep using a fenced mermaid Markdown block.</p>
         </div>
       </header>
       <textarea
-        aria-label="Markdown input"
+        aria-label="Mermaid code input"
         className="markdown-editor"
         spellCheck={false}
         value={value}
