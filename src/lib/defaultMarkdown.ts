@@ -1,12 +1,3 @@
-export const defaultMarkdown = `# Product Flow
+import { mermaidTemplates } from "./templates";
 
-\`\`\`mermaid
-flowchart TD
-  A[Paste Markdown] --> B{Find Mermaid}
-  B -- Found --> C[Parse Flowchart]
-  B -- Missing --> D[Show Empty State]
-  C --> E[Render SVG]
-  E --> F[Polish Lines]
-  F --> G[Visual Preview]
-\`\`\`
-`;
+export const defaultMarkdown = mermaidTemplates[0].code;
