@@ -107,11 +107,12 @@ export function PreviewPane({
   };
 
   const isFullscreen = isNativeFullscreen || isFallbackFullscreen;
+  const styleClassName = `visual-style-${visualStyle}`;
 
   return (
     <section
       ref={paneRef}
-      className={`tool-pane preview-pane${isFallbackFullscreen ? " preview-pane--fullscreen" : ""}`}
+      className={`tool-pane preview-pane ${styleClassName}${isFallbackFullscreen ? " preview-pane--fullscreen" : ""}`}
     >
       <header className="pane-header">
         <div>
@@ -183,7 +184,7 @@ export function PreviewPane({
           {exportMessage ? <p className="export-message">{exportMessage}</p> : null}
         </div>
       </header>
-      <div className="preview-canvas" data-testid="preview-canvas">
+      <div className={`preview-canvas ${styleClassName}`} data-testid="preview-canvas">
         {state.type === "loading" ? (
           <div className="state-panel">Rendering diagram...</div>
         ) : null}

@@ -157,6 +157,18 @@ describe("PreviewPane", () => {
     });
   });
 
+  it("exposes the selected visual style on the pane and canvas", () => {
+    render(
+      <PreviewPane
+        {...defaultPreviewPaneProps}
+        state={{ type: "success", svg: "<svg viewBox=\"0 0 10 10\" />" }}
+        visualStyle="dark"
+      />
+    );
+
+    expect(screen.getByTestId("preview-canvas")).toHaveClass("visual-style-dark");
+  });
+
   it("uses fallback fullscreen when native fullscreen is unavailable and exits on Escape", async () => {
     render(<PreviewPane {...defaultPreviewPaneProps} state={{ type: "empty" }} />);
 

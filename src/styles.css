@@ -342,6 +342,30 @@ button {
   background-size: 28px 28px;
 }
 
+.preview-canvas.visual-style-classic {
+  background:
+    linear-gradient(#e6ebf2 1px, transparent 1px),
+    linear-gradient(90deg, #e6ebf2 1px, transparent 1px),
+    #f9fafb;
+  background-size: 28px 28px;
+}
+
+.preview-canvas.visual-style-soft-color {
+  background:
+    linear-gradient(rgba(138, 170, 213, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 170, 213, 0.18) 1px, transparent 1px),
+    #f4f8ff;
+  background-size: 28px 28px;
+}
+
+.preview-canvas.visual-style-dark {
+  background:
+    linear-gradient(rgba(148, 163, 184, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.13) 1px, transparent 1px),
+    #111827;
+  background-size: 28px 28px;
+}
+
 .diagram-surface {
   display: grid;
   place-items: center;
@@ -353,6 +377,24 @@ button {
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 18px 48px rgba(42, 56, 78, 0.12);
   transform-origin: center center;
+}
+
+.visual-style-classic .diagram-surface {
+  border-color: #cfd8e3;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(31, 41, 55, 0.1);
+}
+
+.visual-style-soft-color .diagram-surface {
+  border-color: #bdd5f1;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 42px rgba(72, 107, 159, 0.16);
+}
+
+.visual-style-dark .diagram-surface {
+  border-color: #334155;
+  background: #172033;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.32);
 }
 
 .diagram-surface svg {
@@ -408,6 +450,76 @@ button {
 .diagram-surface .edgeLabel p {
   color: #53657b;
   background: #f6f8fb;
+}
+
+.visual-style-classic .diagram-surface .node rect,
+.visual-style-classic .diagram-surface .node circle,
+.visual-style-classic .diagram-surface .node ellipse,
+.visual-style-classic .diagram-surface .node polygon,
+.visual-style-classic .diagram-surface .node path {
+  stroke: #c4ceda;
+  filter: none;
+}
+
+.visual-style-classic .diagram-surface .edgePath .path,
+.visual-style-classic .diagram-surface .flowchart-link,
+.visual-style-classic .diagram-surface path.flowchart-link,
+.visual-style-classic .diagram-surface .edge-thickness-normal {
+  stroke: #4b5563;
+}
+
+.visual-style-soft-color .diagram-surface .node rect,
+.visual-style-soft-color .diagram-surface .node circle,
+.visual-style-soft-color .diagram-surface .node ellipse,
+.visual-style-soft-color .diagram-surface .node polygon,
+.visual-style-soft-color .diagram-surface .node path,
+.visualizer-style-soft-color .node rect,
+.visualizer-style-soft-color .node polygon {
+  stroke: #9dc0ea;
+}
+
+.visual-style-soft-color .diagram-surface .edgePath .path,
+.visual-style-soft-color .diagram-surface .flowchart-link,
+.visual-style-soft-color .diagram-surface path.flowchart-link,
+.visual-style-soft-color .diagram-surface .edge-thickness-normal {
+  stroke: #517eb6;
+}
+
+.visual-style-dark .diagram-surface .node rect,
+.visual-style-dark .diagram-surface .node circle,
+.visual-style-dark .diagram-surface .node ellipse,
+.visual-style-dark .diagram-surface .node polygon,
+.visual-style-dark .diagram-surface .node path {
+  stroke: #475569;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
+}
+
+.visual-style-dark .diagram-surface .node .label,
+.visual-style-dark .diagram-surface .nodeLabel,
+.visual-style-dark .diagram-surface .label,
+.visual-style-dark .diagram-surface text {
+  color: #e5edf7;
+  fill: #e5edf7;
+}
+
+.visual-style-dark .diagram-surface .edgePath .path,
+.visual-style-dark .diagram-surface .flowchart-link,
+.visual-style-dark .diagram-surface path.flowchart-link,
+.visual-style-dark .diagram-surface .edge-thickness-normal {
+  stroke: #9fb1c7;
+}
+
+.visual-style-dark .diagram-surface marker path,
+.visual-style-dark .diagram-surface marker polygon,
+.visual-style-dark .diagram-surface marker circle {
+  fill: #9fb1c7;
+  stroke: #9fb1c7;
+}
+
+.visual-style-dark .diagram-surface .edgeLabel,
+.visual-style-dark .diagram-surface .edgeLabel p {
+  color: #cbd5e1;
+  background: #172033;
 }
 
 .state-panel {
